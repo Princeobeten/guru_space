@@ -1,0 +1,55 @@
+  const fetchUserData = async () => {
+    if (user) {
+      const userDoc = await getDoc(doc(db, 'Users', user.uid));
+      if (userDoc.exists()) {
+        setFirstName(userDoc.data().firstName || '');
+        setLastName(userDoc.data().lastName || '');
+        setEmail(userDoc.data().email || user.email || ''); 
+        setPhone(userDoc.data().phone || ''); 
+      }
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+Recipt
+Start date & End date
+Daily Checking (User Portal)
+
+400 pre hour for co working space - 16
+
+Login, Register and Forgot Password auth ✔
+Middileware ✔
+db Schema -✔
+
+User Dashboard -✔
+Top nav (Notification) ✔
+Botom Nav(Home | book | Transaction | Profile) ✔
+Toaster ✔
+Email Comfrmation -✔
+Recipt, Print Recipt and Email
+
+Feature Update
+Admin
+
+************************************************************************
+
+now i want you to create a BookingPage where the user can book for our space using those info in the Schema and saving to the booking Collection in Firestore make use of reusable component as possible. we have 20 seat and charge NGN400 per hour for a seat and  a discount of  NGN7,000 if a user want to book the whole space, we work from Monday - Friday(10am - 5pm). work on the space availability and all other logic . ✔
+
+*************************************************************************
+
+implement a download booking button close to the booking status. This should download the booking as a PDF create a component for that.
+
+*************************************************************************
+
+Great is works.
+
+Now i want to implement Check in and Check out functionality for each card  so that once a user check's in the booking status is updated to "in progress" and the timer starts counting so ones the duration expiries then can check out. but upon check out show the initial time booked and the time the user spent before checking out if it is below the duration keep the  amount to pay same but if it is above calculate and show the users the new amount to pay via a pay in desk button(display a toaster message).

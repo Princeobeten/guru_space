@@ -1,0 +1,26 @@
+/guru-space
+├── /components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── Button.tsx
+│   └── Card.tsx
+├── /pages
+│   ├── /api
+│   ├── _app.tsx
+│   ├── index.tsx
+│   └── /auth
+│       ├── login.tsx
+│       └── register.tsx
+├── /styles
+│   └── globals.css
+├── /lib
+│   └── firebaseConfig.ts
+
+
+Next Steps:
+Step 4: Firestore Integration: We'll set up Firestore for storing booking details, user profiles, etc.
+Step 5: Booking System UI: Design and implement components to display available spaces and make bookings.
+Step 6: Firebase Storage Integration: Handle images and other media files.
+Step 7: Deployment: Deploy on Vercel.
+
+i dont understand step 4, but i think we should create a dashboard where the user would taken to after login(all booking and list of space would be done the), make registration(store user info in firestore if user info is not the already) and login auth functionally.

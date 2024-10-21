@@ -79,7 +79,7 @@ const calculateTotalPrice = (
   return PRICE_PER_SEAT * numberOfSeats * duration;
 };
 
-export const PriceCalculator = ({
+const PriceCalculator = ({
   duration,
   numberOfSeats,
   bookWholeSpace,

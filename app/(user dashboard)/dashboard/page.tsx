@@ -17,17 +17,74 @@ const UserDashboard = () => {
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState<string | undefined>('');
-  const [lastName, setLastName] = useState<string | undefined>(''); // New state for lastName
-  const [email, setEmail] = useState<string | undefined>(''); // New state for email
-  const [phone, setPhone] = useState<string | undefined>(''); // New state for phone
+  // const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>(''); 
+  const [email, setEmail] = useState<string>(''); 
+  const [phone, setPhone] = useState<string>('');
 
+
+  // useEffect(() => {
+  //   if (user) {
+  //     const fetchData = async () => {
+  //       setIsLoading(true);
+  //       await Promise.all([
+  //         fetchCurrentBooking(), 
+  //         fetchRecentBookings(),
+  //         fetchUserData()
+  //       ]);
+  //       setIsLoading(false);
+  //     };
+  //     fetchData();
+  //   }
+  // }, [user]);
+
+  //   const fetchUserData = async () => {
+  //   if (user) {
+  //     const userDoc = await getDoc(doc(db, 'Users', user.uid));
+  //     if (userDoc.exists()) {
+  //       const userData = userDoc.data();
+  //       setFirstName(userData.firstName || '');
+  //       setLastName(userData.lastName || ''); 
+  //       setEmail(userData.email || user.email || ''); 
+  //       setPhone(userData.phone || '');
+  //     }
+  //   }
+  // };
+
+
+  const fetchUserData = async () => {
+    if (user) {
+      try {
+        const userDoc = await getDoc(doc(db, 'Users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          // Set default values if data is undefined
+          setFirstName(userData.firstName || '');
+          setLastName(userData.lastName || '');
+          setEmail(userData.email || user.email || '');
+          setPhone(userData.phone || '');
+          
+          console.log('User data fetched:', {
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email || user.email,
+            phone: userData.phone
+          });
+        } else {
+          console.log('No user document found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     if (user) {
       const fetchData = async () => {
         setIsLoading(true);
         await Promise.all([
-          fetchCurrentBooking(), 
+          fetchCurrentBooking(),
           fetchRecentBookings(),
           fetchUserData()
         ]);
@@ -37,20 +94,6 @@ const UserDashboard = () => {
     }
   }, [user]);
 
-
-
-    const fetchUserData = async () => {
-    if (user) {
-      const userDoc = await getDoc(doc(db, 'Users', user.uid));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setFirstName(userData.firstName || '');
-        setLastName(userData.lastName || ''); 
-        setEmail(userData.email || user.email || ''); 
-        setPhone(userData.phone || '');
-      }
-    }
-  };
 
 
   const fetchCurrentBooking = async () => {
@@ -112,8 +155,18 @@ const UserDashboard = () => {
     );
   };
 
-  const BookingCard = ({ booking }: { booking: Booking }) => (
-    <motion.div
+  const BookingCard = ({ booking }: { booking: Booking }) => {
+
+    console.log('BookingCard Props:', {
+      firstName,
+      lastName,
+      email,
+      phone,
+      booking
+    });
+
+    return(
+      <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
@@ -183,7 +236,8 @@ const UserDashboard = () => {
         )}
       </div>
     </motion.div>
-  );
+    );
+  }
   
   
   if (loading) {

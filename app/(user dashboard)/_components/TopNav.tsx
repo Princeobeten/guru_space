@@ -79,14 +79,6 @@ const TopNav = () => {
               <HelpCircle className="h-6 w-6" />
             </button>
 
-            <button
-              onClick={() => setIsNotificationOpen(!isNotificationOpen)}
-              className="p-2 hover:bg-navy-light rounded-full transition-colors duration-200 relative"
-            >
-              <Bell className="h-6 w-6" />
-              <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full" />
-            </button>
-
             <AnimatePresence>
               {isNotificationOpen && (
                 <motion.div

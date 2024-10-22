@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import "../globals.css";
-import TopNav from "./dashboard/_components/TopNav";
-import BottomNav from "./dashboard/_components/BottomNav";
+import TopNav from "./_components/TopNav";
+import BottomNav from "./_components/BottomNav";
+
+export const metadata: Metadata = {
+  title: "Guru Space",
+  description: "Guru Space",
+};
 
 export default function UserLayout({
   children,

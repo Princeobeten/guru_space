@@ -250,8 +250,13 @@ export const BookingPDF = ({ booking, firstName, lastName, email, phone }: { boo
             </View>
             
             <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, { fontWeight: 'bold' }]}>Seats:</Text>
+              <Text style={[styles.tableCell, { fontWeight: 'bold' }]}>Seats Booked:</Text>
               <Text style={styles.tableCell}>{booking.numberOfSeats}</Text>
+            </View>
+
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, { fontWeight: 'bold' }]}>Status:</Text>
+              <Text style={styles.tableCell}>{booking.status}</Text>
             </View>
           </View>
         </View>

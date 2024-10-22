@@ -25,7 +25,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BookingSkeleton } from "./_components/BookingSkeleton";
-import { BookingPDFDownload } from "./_components/BookingDownloadButton";
+import { BookingPDFDownload } from "../_components/BookingDownloadButton";
+import { StatusBadge } from "../_components/StatusBadge";
 
 const UserDashboard = () => {
   const [user, loading] = useAuthState(auth);
@@ -33,7 +34,6 @@ const UserDashboard = () => {
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState<string | undefined>("");
-  // const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
@@ -136,39 +136,7 @@ const UserDashboard = () => {
     setRecentBookings(bookings);
   };
 
-  const StatusBadge = ({ status }: { status: string }) => {
-    const getStatusColor = (status: string) => {
-      switch (status.toLowerCase()) {
-        case "active":
-          return "bg-green-100 text-green-800";
-        case "completed":
-          return "bg-gray-100 text-gray-800";
-        case "cancelled":
-          return "bg-red-100 text-red-800";
-        default:
-          return "bg-blue-100 text-blue-800";
-      }
-    };
-
-    return (
-      <span
-        className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-          status
-        )}`}
-      >
-        {status}
-      </span>
-    );
-  };
-
   const BookingCard = ({ booking }: { booking: Booking }) => {
-    // console.log("BookingCard Props:", {
-    //   firstName,
-    //   lastName,
-    //   email,
-    //   phone,
-    //   booking,
-    // });
 
     return (
       <motion.div
@@ -284,8 +252,7 @@ const UserDashboard = () => {
           className="mb-8"
         >
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Welcome back,{" "}
-            {firstName || user?.displayName || user?.email?.split("@")[0]}
+            {`Welcome back, ${firstName} ${lastName}`}
           </h1>
           <p className="mt-2 text-gray-600">
             Manage your space bookings and view your history

@@ -16,17 +16,17 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
-      showOutsideDays={showOutsideDays} // Display days outside of the current month
-      className={cn("p-4 rounded-lg border", className)}
-      classNames={{
-        ...classNames,
-        nav_button: "text-navy hover:bg-gray-100", // Styling for navigation buttons
-      }}
+      showOutsideDays={showOutsideDays}
+      className={cn("p-4", className)}
+      // classNames={{
+      //   ...classNames,
+      //   nav_button: "text-navy text-xs hover:bg-gray-100", // Styling for navigation buttons
+      // }}
       components={{
-        // Custom left navigation icon
-        IconLeft: ({ ...props }) => <ChevronLeft {...props} />,
-        // Custom right navigation icon
-        IconRight: ({ ...props }) => <ChevronRight {...props} />,
+        // // Custom left navigation icon
+        // IconLeft: ({ ...props }) => <ChevronLeft {...props} />,
+        // // Custom right navigation icon
+        // IconRight: ({ ...props }) => <ChevronRight {...props} />,
       }}
       {...props}
     />

@@ -349,7 +349,7 @@ const BookingPage = () => {
                             today.setHours(0, 0, 0, 0);
                             return date < today || day === 0 || day === 6;
                           }}
-                          className="rounded-md border flex justify-center"
+                          className="flex items-center justify-center"
                         />
                       </FormControl>
                       <FormMessage />

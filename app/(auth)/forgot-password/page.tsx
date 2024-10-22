@@ -3,7 +3,7 @@
 import '../../globals.css';
 import { useState } from 'react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../../lib/firebase';
+import { auth } from '@/lib/firebase';
 import Toaster from '@/components/Toaster';
 import Link from 'next/link';
 

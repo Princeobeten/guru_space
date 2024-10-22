@@ -1,7 +1,7 @@
 'use client';
 
-import TopNav from './_components/TopNav';
-import BottomNav from './_components/BottomNav';
+import TopNav from '../_components/TopNav';
+import BottomNav from '../_components/BottomNav';
 import "../../globals.css";
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';

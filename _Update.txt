@@ -1,25 +1,3 @@
-  const fetchUserData = async () => {
-    if (user) {
-      const userDoc = await getDoc(doc(db, 'Users', user.uid));
-      if (userDoc.exists()) {
-        setFirstName(userDoc.data().firstName || '');
-        setLastName(userDoc.data().lastName || '');
-        setEmail(userDoc.data().email || user.email || ''); 
-        setPhone(userDoc.data().phone || ''); 
-      }
-    }
-  };
-
-
-
-
-
-
-
-
-
-
-
 Recipt
 Start date & End date
 Daily Checking (User Portal)
@@ -46,7 +24,7 @@ now i want you to create a BookingPage where the user can book for our space usi
 
 *************************************************************************
 
-implement a download booking button close to the booking status. This should download the booking as a PDF create a component for that.
+implement a download booking button close to the booking status. This should download the booking as a PDF create a component for that.  ✔
 
 *************************************************************************
 

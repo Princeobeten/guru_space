@@ -8,11 +8,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Cookies from 'js-cookie';
+import TermsDialog from './TermsDialog'; // Import the TermsDialog component
 
 const TopNav = () => {
   const router = useRouter();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false); // State for TermsDialog
 
   const handleLogout = async () => {
     if (isLoggingOut) return; 
@@ -72,8 +74,9 @@ const TopNav = () => {
         {/* Icons Section */}
         <div className="flex items-center space-x-6">
           <motion.div className="relative" whileHover={{ scale: 1.05 }}>
+            {/* Help Icon */}
             <button
-              onClick={() => {}}
+              onClick={() => setIsTermsDialogOpen(true)} // Open the TermsDialog on click
               className="p-2 hover:bg-navy-light rounded-full transition-colors duration-200 relative"
             >
               <HelpCircle className="h-6 w-6" />
@@ -127,6 +130,12 @@ const TopNav = () => {
           </motion.button>
         </div>
       </div>
+
+      {/* Terms and Conditions Dialog */}
+      <TermsDialog 
+        isOpen={isTermsDialogOpen} 
+        onOpenChange={setIsTermsDialogOpen} 
+      />
     </nav>
   );
 };

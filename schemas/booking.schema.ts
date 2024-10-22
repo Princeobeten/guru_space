@@ -1,8 +1,8 @@
 import { Timestamp } from 'firebase/firestore';
 
 export interface Booking {
-  totalCapacity: number;
-  date: any;
+  totalCapacity?: number;
+  date?: any;
   bookingId: string;
   userId: string;
   spaceType: 'Co-working' | 'Conference'; 

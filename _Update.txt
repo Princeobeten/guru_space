@@ -1,8 +1,8 @@
-Recipt
-Start date & End date
-Daily Checking (User Portal)
+Recipt ✔
+Start date & End date ✔
+Daily Checking (User Portal) ✔
 
-400 pre hour for co working space - 16
+400 pre hour for co working space - 16 ✔
 
 Login, Register and Forgot Password auth ✔
 Middileware ✔
@@ -12,8 +12,10 @@ User Dashboard -✔
 Top nav (Notification) ✔
 Botom Nav(Home | book | Transaction | Profile) ✔
 Toaster ✔
-Email Comfrmation -✔
-Recipt, Print Recipt and Email
+Email Comfrmation password rest -✔
+Recipt, Print Recipt  ✔
+
+Email Notification
 
 Feature Update
 Admin

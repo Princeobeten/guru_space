@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { auth, db } from "@/lib/firebase";
-import { sendPasswordResetEmail, updatePassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import {
   collection,
   query,
@@ -12,14 +12,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Eye, EyeOff, Save, Undo } from "lucide-react";
+import { Save, Undo } from "lucide-react";
 import Toaster from "@/components/Toaster";
 import { validateUserData } from "@/schemas/user.schema";
 import ProfileSkeleton from "./_components/ProfileSkeleton";
@@ -179,7 +172,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen mb-10 py-20 px-4">
+    <div className="min-h-screen mb-10 py-28 md:py-20 px-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Profile Section */}
         <div className="bg-white rounded-lg shadow-lg p-6">

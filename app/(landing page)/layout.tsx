@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "../globals.css";
 import Footer from "./_components/Footer";
 import Navbar from "./_components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: [ "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+});
 
 export const metadata: Metadata = {
   title: "Guru Space",
-  description: "Guru Space",
+  description: "Guru Space - Co-working space in calabar",
 };
 
 export default function RootLayout({
@@ -18,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}><Navbar/>{children} <Footer/></body>
+      <body className={poppins.className}><Navbar/>{children} <Footer/></body>
     </html>
   );
 }

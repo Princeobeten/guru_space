@@ -16,8 +16,13 @@ const Login = () => {
   const [success, setSuccess] = useState<string>('');
   const [showToaster, setShowToaster] = useState<boolean>(false);
   const router = useRouter();
-  const searchParams = useSearchParams(); // Moved to the top level
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'; // Defined at the top level
+
+  // Wrapping searchParams in a Suspense boundary
+  const SearchParamsComponent = () => {
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+    return callbackUrl;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,14 +38,20 @@ const Login = () => {
       Cookies.set('authToken', token, {
         expires: 7, // 7 days
         secure: true,
-        sameSite: 'strict',
+        sameSite: 'strict'
       });
 
       setSuccess('Login successful! Redirecting...');
       setShowToaster(true);
 
       setTimeout(() => {
-        router.push(callbackUrl); // Use the callbackUrl from the top level
+        const callbackUrl = SearchParamsComponent();
+        router.push(callbackUrl);
+
+        // Force reload after redirect
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }, 1000);
     } catch (err: any) {
       switch (err.code) {

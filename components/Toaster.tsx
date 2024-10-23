@@ -25,7 +25,7 @@ const Toaster: React.FC<ToasterProps> = ({ message, type, isVisible, onClose }) 
       const autoCloseTimer = setTimeout(() => {
         setShow(false);
         onClose();
-      }, 5000); 
+      }, 3000); 
 
       return () => {
         clearInterval(timer);

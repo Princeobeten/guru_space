@@ -1,5 +1,7 @@
+'use client';
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ServiceCard from "./Card";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,14 +14,24 @@ import {
 } from "@/components/ui/carousel";
 
 const Homepage = () => {
-
   const carouselImages = [
-    { src: "/c1.jpg", alt: "Coworking space 1" },
+    { src: "/b1.jpg", alt: "Coworking space 4" },
     { src: "/c2.jpg", alt: "Coworking space 2" },
     { src: "/c3.jpg", alt: "Coworking space 3" },
-    { src: "/b1.jpg", alt: "Coworking space 3" },
-    { src: "/huboutside.jpg", alt: "Coworking space 3" },
+    { src: "/huboutside.jpg", alt: "Coworking space 5" },
   ];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) =>
+        prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [carouselImages.length]);
 
   return (
     <div className="min-h-screen bg-white mx-8 px-4">
@@ -49,11 +61,11 @@ const Homepage = () => {
 
           <div className="relative z-10 pr-10">
             <Image
-              src="/huboutside.jpg"
-              alt="Coworking space interior"
+              src={carouselImages[currentImageIndex].src}
+              alt={carouselImages[currentImageIndex].alt}
               width={600}
               height={400}
-              className="rounded-lg shadow-md w-full"
+              className="rounded-lg shadow-md w-full transition-opacity duration-1000"
             />
           </div>
         </div>
@@ -87,7 +99,7 @@ const Homepage = () => {
           <h2 className="text-3xl font-bold mb-8 text-center text-navy">
             Explore our Space
           </h2>
-          
+
           <div className="relative px-8">
             <Carousel
               opts={{
@@ -98,17 +110,17 @@ const Homepage = () => {
             >
               <CarouselContent className="-ml-2 md:-ml-4">
                 {carouselImages.map((image, index) => (
-                  <CarouselItem 
-                    key={index} 
+                  <CarouselItem
+                    key={index}
                     className="pl-2 md:pl-4 md:basis-1/2 lg:basis-1/3"
                   >
                     <Card className="border">
                       <CardContent className="p-1">
                         <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
-                          <Image 
-                            src={image.src} 
-                            alt={image.alt} 
-                            width={400} 
+                          <Image
+                            src={image.src}
+                            alt={image.alt}
+                            width={400}
                             height={300}
                             className="object-cover transition-transform duration-300 hover:scale-105"
                           />
@@ -118,7 +130,7 @@ const Homepage = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              
+
               <div className="absolute -left-4 top-1/2 -translate-y-1/2">
                 <CarouselPrevious className="h-12 w-12 border-2 border-navy text-navy hover:bg-navy hover:text-white" />
               </div>

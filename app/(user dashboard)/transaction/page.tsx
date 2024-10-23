@@ -28,7 +28,7 @@ import {
   XCircle,
   History,
 } from "lucide-react";
-import { BookingPDFDownload } from "../_components/BookingDownloadButton";
+// import { BookingPDFDownload } from "../_components/BookingDownloadButton";
 import {
   Select,
   SelectContent,
@@ -38,6 +38,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "../_components/StatusBadge";
+
+// Dynamically import the PDF download component with no SSR
+const BookingPDFDownload = dynamic(
+  () => import('../_components/BookingDownloadButton').then(mod => mod.BookingPDFDownload),
+  { ssr: false,}
+);
+
 
 const TransactionHistory = () => {
   const [user, loading] = useAuthState(auth);

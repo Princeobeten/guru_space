@@ -25,8 +25,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BookingSkeleton } from "./_components/BookingSkeleton";
-import { BookingPDFDownload } from "../_components/BookingDownloadButton";
+// import { BookingPDFDownload } from "../_components/BookingDownloadButton";
 import { StatusBadge } from "../_components/StatusBadge";
+import dynamic from "next/dynamic";
+
+// Dynamically import the PDF download component with no SSR
+const BookingPDFDownload = dynamic(
+  () => import('../_components/BookingDownloadButton').then(mod => mod.BookingPDFDownload),
+  { ssr: false,}
+);
 
 const UserDashboard = () => {
   const [user, loading] = useAuthState(auth);

@@ -43,15 +43,11 @@ const Login = () => {
 
       setSuccess('Login successful! Redirecting...');
       setShowToaster(true);
+      router.refresh();
 
       setTimeout(() => {
         const callbackUrl = SearchParamsComponent();
         router.push(callbackUrl);
-
-        // Force reload after redirect
-        setTimeout(() => {
-          window.location.reload();
-        }, 500);
       }, 1000);
     } catch (err: any) {
       switch (err.code) {

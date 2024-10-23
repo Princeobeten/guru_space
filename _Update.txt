@@ -16,6 +16,7 @@ Email Comfrmation password rest -✔
 Recipt, Print Recipt  ✔
 
 Email Notification
+Calender Notification
 
 Feature Update
 Admin

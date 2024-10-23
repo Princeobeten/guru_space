@@ -16,13 +16,8 @@ const Login = () => {
   const [success, setSuccess] = useState<string>('');
   const [showToaster, setShowToaster] = useState<boolean>(false);
   const router = useRouter();
-
-  // Wrapping searchParams in a Suspense boundary
-  const SearchParamsComponent = () => {
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-    return callbackUrl;
-  };
+  const searchParams = useSearchParams(); // Moved to the top level
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'; // Defined at the top level
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,16 +33,15 @@ const Login = () => {
       Cookies.set('authToken', token, {
         expires: 7, // 7 days
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
       });
 
       setSuccess('Login successful! Redirecting...');
       setShowToaster(true);
 
       setTimeout(() => {
-        const callbackUrl = SearchParamsComponent();
-        router.push(callbackUrl);
-      }, 2000);
+        router.push(callbackUrl); // Use the callbackUrl from the top level
+      }, 1000);
     } catch (err: any) {
       switch (err.code) {
         case 'auth/user-not-found':

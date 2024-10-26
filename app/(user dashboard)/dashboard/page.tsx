@@ -235,7 +235,7 @@ const UserDashboard = () => {
         <div className="space-y-3">
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
-            <MapPin className="w-5 h-5 mr-2 text-gray-500" /> Location:
+            <MapPin className="w-5 h-5 mr-2 text-gray-500" /> <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Location:</p>
             </div>
             
             <span className="bg-blue-100 rounded-full px-2 py-1 text-sm">
@@ -245,7 +245,7 @@ const UserDashboard = () => {
 
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
-            <CalendarPlus2 className="w-5 h-5 mr-2 text-gray-500" /> Start Date:
+            <CalendarPlus2 className="w-5 h-5 mr-2 text-gray-500" /><p className="hidden sm:inline-flex md:hidden lg:inline-flex">Start Date:</p>
             </div>
             
             <div>
@@ -264,7 +264,7 @@ const UserDashboard = () => {
 
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
-            <CalendarX className="w-5 h-5 mr-2 text-gray-500" /> End Date:
+            <CalendarX className="w-5 h-5 mr-2 text-gray-500" /><p className="hidden sm:inline-flex md:hidden lg:inline-flex">End Date:</p>
             </div>
             
             <div>
@@ -281,7 +281,8 @@ const UserDashboard = () => {
 
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
-            <Clock className="w-5 h-5 mr-2 text-gray-500" /> Duration:
+            <Clock className="w-5 h-5 mr-2 text-gray-500" />
+            <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Amout:</p>
             </div>
             
             <span className="bg-yellow-100 rounded-full px-2 py-1 text-sm">
@@ -291,7 +292,8 @@ const UserDashboard = () => {
 
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
-            <DollarSign className="w-5 h-5 mr-2 text-gray-500" />Amout:
+            <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
+            <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Amout:</p>
             </div>
             
             <span className="bg-violet-100 rounded-full px-2 py-1 text-sm">
@@ -302,7 +304,8 @@ const UserDashboard = () => {
           {!booking.bookWholeSpace && (
             <div className="flex items-center justify-between text-gray-800 pb-6">
               <div className="flex items-center gap-1">
-                <Armchair className="w-5 h-5 mr-2 text-gray-500" /> Seat:
+                <Armchair className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Seat:</p>
               </div>
               
               <span className="bg-pink-100 rounded-full px-2 py-1 text-sm">
@@ -314,17 +317,18 @@ const UserDashboard = () => {
           {booking.bookWholeSpace && (
             <div className="flex items-center justify-between text-gray-800 pb-6">
               <div className="flex items-center gap-1">
-                <Armchair className="w-5 h-5 mr-2 text-gray-500" /> Seat:
+                <Armchair className="w-5 h-5 mr-2 text-gray-500" />
+                <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Seat:</p>
               </div>
               
-              <span className="bg-pink-100 rounded-full px-2 py-1 text-sm">
+              <span className="bg-pink-100 rounded-full px-2 py-1 text-xs lg:text-sm">
                 Whole space booked (Capacity: {booking.numberOfSeats} seats)
               </span>
             </div>
           )}
 
           {/* Action Buttons */}
-          <div className="mt-10 flex gap-2 sm:gap-3 justify-between items-center xm:flex-row border-t p-2">
+          <div className="mt-10 flex gap-2 sm:gap-3 justify-between items-center border-t p-2">
             {isActiveOrInProgress && (
               <div>
                 <Button
@@ -333,7 +337,7 @@ const UserDashboard = () => {
                   disabled={true} // Check-in logic placeholder
                 >
                   <LogIn className="w-5 h-5 mr-1 sm:mr-2" />
-                  Check In
+                  <p className="hidden sm:inline-flex md:hidden lg:inline-flex -ml-2 -mr-1">Check</p>In
                 </Button>
                 <Button
                   
@@ -341,7 +345,7 @@ const UserDashboard = () => {
                   disabled={true} // Check-out logic placeholder
                 >
                   <LogOut className="w-5 h-5 mr-1 sm:mr-2" />
-                  Check Out
+                  <p className="hidden sm:inline-flex md:hidden lg:inline-flex -ml-2 -mr-1">Check</p>Out
                 </Button>
               </div>
             )}

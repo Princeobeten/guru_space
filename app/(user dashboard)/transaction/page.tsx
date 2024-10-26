@@ -312,7 +312,7 @@ const TransactionHistory = () => {
             icon={DollarSign}
             label="Total Amount"
             value={`NGN${transactionStats.totalAmount.toLocaleString()}`}
-            bgColor="bg-white"
+            bgColor="bg-blue-100"
           />
         </div>
 

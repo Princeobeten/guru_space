@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   collection,
   query,
@@ -10,6 +10,7 @@ import {
   getDocs,
   doc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db, auth } from "@/lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -22,28 +23,41 @@ import {
   DollarSign,
   Armchair,
   MapPin,
+  LogOut,
+  LogIn,
+  XCircle,
+  Loader2,
 } from "lucide-react";
 import Link from "next/link";
 import { BookingSkeleton } from "./_components/BookingSkeleton";
 // import { BookingPDFDownload } from "../_components/BookingDownloadButton";
 import { StatusBadge } from "../_components/StatusBadge";
 import dynamic from "next/dynamic";
+import { Button } from "@/components/ui/button";
 
 // Dynamically import the PDF download component with no SSR
 const BookingPDFDownload = dynamic(
-  () => import('../_components/BookingDownloadButton').then(mod => mod.BookingPDFDownload),
-  { ssr: false,}
+  () =>
+    import("../_components/BookingDownloadButton").then(
+      (mod) => mod.BookingPDFDownload
+    ),
+  { ssr: false }
 );
 
 const UserDashboard = () => {
   const [user, loading] = useAuthState(auth);
-  const [currentBooking, setCurrentBooking] = useState<Booking | null>(null);
+  const [currentBookings, setCurrentBookings] = useState<Booking[]>([]);
   const [recentBookings, setRecentBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState<string | undefined>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
+  const [isCancelling, setIsCancelling] = useState<string | null>(null);
+  const [checkInTimes, setCheckInTimes] = useState<Record<string, number>>({});
+  const [remainingTimes, setRemainingTimes] = useState<Record<string, number>>(
+    {}
+  );
 
   const fetchUserData = async () => {
     if (user) {
@@ -66,24 +80,111 @@ const UserDashboard = () => {
         }
 
         const userData = userDoc.data();
-        //console.log('Found user data:', userData);
-
         setFirstName(userData?.firstName || "");
         setLastName(userData?.lastName || "");
         setEmail(userData?.email || user.email || "");
         setPhone(userData?.phone || "");
-
-        // console.log('States updated:', {
-        //   firstName: userData.firstName,
-        //   lastName: userData.lastName,
-        //   email: userData.email || user.email,
-        //   phone: userData.phone
-        // });
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     }
   };
+
+  const fetchCurrentBooking = async () => {
+    if (!user) return;
+
+    const bookingsRef = collection(db, "Bookings");
+    const q = query(
+      bookingsRef,
+      where("userId", "==", user.uid),
+      where("status", "in", ["active", "in progress"]),
+      orderBy("date", "desc")
+      //limit(1)
+    );
+
+    try {
+      const snapshot = await getDocs(q);
+      const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
+      setCurrentBookings(bookings);
+    } catch (error) {
+      console.error("Error fetching current bookings:", error);
+      setCurrentBookings([]);
+    }
+  };
+
+  const fetchRecentBookings = async () => {
+    if (!user) return;
+
+    const bookingsRef = collection(db, "Bookings");
+    const q = query(
+      bookingsRef,
+      where("userId", "==", user.uid),
+      where("status", "in", ["completed", "cancelled"]),
+      orderBy("date", "desc"),
+      limit(2)
+    );
+
+    // const snapshot = await getDocs(q);
+    // const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
+    // setRecentBookings(bookings);
+    try {
+      const snapshot = await getDocs(q);
+      const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
+      setRecentBookings(bookings);
+    } catch (error) {
+      console.error("Error fetching recent bookings:", error);
+      setRecentBookings([]);
+    }
+  };
+
+  const handleCancelBooking = async (bookingId: string) => {
+    if (!user) return;
+
+    try {
+      setIsCancelling(bookingId);
+      const bookingRef = doc(db, "Bookings", bookingId);
+      await updateDoc(bookingRef, {
+        status: "cancelled",
+        cancelledAt: new Date(),
+      });
+
+      // Refresh the bookings data
+      await Promise.all([fetchCurrentBooking(), fetchRecentBookings()]);
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+    } finally {
+      setIsCancelling(null);
+    }
+  };
+
+  const handleCheckIn = useCallback(
+    async (bookingId: string, duration: number) => {
+      if (!user) return;
+
+      try {
+        const bookingRef = doc(db, "Bookings", bookingId);
+        const checkInTime = new Date().getTime();
+
+        await updateDoc(bookingRef, {
+          status: "in progress",
+          checkInTime,
+        });
+
+        // Update local state to trigger countdown
+        setCheckInTimes((prev) => ({ ...prev, [bookingId]: checkInTime }));
+        setRemainingTimes((prev) => ({
+          ...prev,
+          [bookingId]: duration * 60 * 60 * 1000,
+        }));
+
+        // Refresh current bookings
+        await fetchCurrentBooking();
+      } catch (error) {
+        console.error("Error during check-in:", error);
+      }
+    },
+    [user, fetchCurrentBooking]
+  );  // TODO Implement Check in
 
   useEffect(() => {
     if (user) {
@@ -105,45 +206,10 @@ const UserDashboard = () => {
     }
   }, [user]);
 
-  const fetchCurrentBooking = async () => {
-    if (!user) return;
-
-    const bookingsRef = collection(db, "Bookings");
-    const q = query(
-      bookingsRef,
-      where("userId", "==", user.uid),
-      where("status", "in", ["active", "in progress"]),
-      orderBy("date", "desc"),
-      limit(1)
-    );
-
-    const snapshot = await getDocs(q);
-
-    if (!snapshot.empty) {
-      setCurrentBooking(mapBookingData(snapshot.docs[0]));
-    } else {
-      setCurrentBooking(null);
-    }
-  };
-
-  const fetchRecentBookings = async () => {
-    if (!user) return;
-
-    const bookingsRef = collection(db, "Bookings");
-    const q = query(
-      bookingsRef,
-      where("userId", "==", user.uid),
-      where("status", "in", ["completed", "cancelled"]),
-      orderBy("date", "desc"),
-      limit(5)
-    );
-
-    const snapshot = await getDocs(q);
-    const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
-    setRecentBookings(bookings);
-  };
-
   const BookingCard = ({ booking }: { booking: Booking }) => {
+    const isCancelled = booking.status === "cancelled";
+    const isActiveOrInProgress =
+      booking.status === "active" || booking.status === "in progress";
 
     return (
       <motion.div
@@ -151,9 +217,9 @@ const UserDashboard = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
       >
-        <div className="flex items-start justify-between mb-4">
+        <div className="flex items-start justify-between mb-4 border-b">
           <h3 className="text-lg font-semibold">{booking.spaceType}</h3>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <StatusBadge status={booking.status} />
             <BookingPDFDownload
               booking={booking}
@@ -165,6 +231,7 @@ const UserDashboard = () => {
           </div>
         </div>
 
+        {/* Booking Details */}
         <div className="space-y-3">
           <div className="flex items-center text-gray-800">
             <MapPin className="w-5 h-5 mr-2 text-gray-500" />
@@ -214,7 +281,7 @@ const UserDashboard = () => {
           </div>
 
           {!booking.bookWholeSpace && (
-            <div className="flex items-center text-gray-800">
+            <div className="flex items-center text-gray-800 pb-6">
               <Armchair className="w-5 h-5 mr-2 text-gray-500" />
               <span className="bg-pink-100 rounded-full p-1 text-xs">
                 {booking.numberOfSeats} seats booked
@@ -223,13 +290,51 @@ const UserDashboard = () => {
           )}
 
           {booking.bookWholeSpace && (
-            <div className="flex items-center text-gray-800">
+            <div className="flex items-center text-gray-800 pb-6">
               <Armchair className="w-5 h-5 mr-2 text-gray-500" />
               <span className="bg-pink-100 rounded-full p-1 pl-4 text-xs">
                 Whole space booked (Capacity: {booking.numberOfSeats} seats)
               </span>
             </div>
           )}
+
+          {/* Action Buttons */}
+          <div className="mt-10 flex gap-2 sm:gap-3 justify-between items-center xm:flex-row border-t p-2">
+            {isActiveOrInProgress && (
+              <div>
+                <Button
+                  className="mr-4"
+                  variant='default'
+                  disabled={true} // Check-in logic placeholder
+                >
+                  <LogIn className="w-5 h-5 mr-1 sm:mr-2" />
+                  Check In
+                </Button>
+                <Button
+                  
+                  variant="outline"
+                  disabled={true} // Check-out logic placeholder
+                >
+                  <LogOut className="w-5 h-5 mr-1 sm:mr-2" />
+                  Check Out
+                </Button>
+              </div>
+            )}
+            {isActiveOrInProgress && (
+              <Button
+              variant="destructive"
+              
+                onClick={() => handleCancelBooking(booking.bookingId)}
+                disabled={isCancelling === booking.bookingId}
+              >
+                {isCancelling === booking.bookingId ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <XCircle className="w-5 h-5" />
+                )}
+              </Button>
+            )}
+          </div>
         </div>
       </motion.div>
     );
@@ -237,7 +342,7 @@ const UserDashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="min-h-screen bg-gray-50 py-20 p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-8"></div>
           <div className="grid gap-8 md:grid-cols-2">
@@ -284,11 +389,15 @@ const UserDashboard = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-xl font-semibold mb-4">Current Booking</h2>
+            <h2 className="text-xl font-semibold mb-4">Current Bookings</h2>
             {isLoading ? (
               <BookingSkeleton />
-            ) : currentBooking ? (
-              <BookingCard booking={currentBooking} />
+            ) : currentBookings.length > 0 ? (
+              <div className="space-y-4">
+                {currentBookings.map((booking, index) => (
+                  <BookingCard key={index} booking={booking} />
+                ))}
+              </div>
             ) : (
               <div className="bg-white rounded-lg shadow-md p-6 text-center">
                 <p className="text-gray-600 text-xs">No active bookings</p>

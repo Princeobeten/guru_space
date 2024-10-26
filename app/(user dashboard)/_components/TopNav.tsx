@@ -53,9 +53,9 @@ const TopNav = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-navy text-white shadow-lg">
+    <nav className="fixed top-0 w-full h-max z-50 bg-navy text-white shadow-lg">
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto h-max px-4 mt-2 flex justify-between items-center">
         {/* Logo */}
         <Link
           href="/dashboard"
@@ -72,7 +72,7 @@ const TopNav = () => {
         </Link>
 
         {/* Icons Section */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center justify-center space-x-6">
           <motion.div className="relative" whileHover={{ scale: 1.05 }}>
             {/* Help Icon */}
             <button

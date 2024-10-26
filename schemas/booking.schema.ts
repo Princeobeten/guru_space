@@ -13,9 +13,12 @@ export interface Booking {
   endDate: Timestamp;
   endTime: string;
   amount: number;
-  status: 'active' | 'in progress' | 'completed' | 'canceled';
+  status: 'active' | 'in progress' | 'completed' | 'cancelled';
   location: string;
   bookWholeSpace: boolean;
+  checkInTime?: number;
+  checkOutTime?: number;
+  cancelledAt?: number;
 }
 
 export type CreateBookingInput = Omit<Booking, 'status' | 'bookingId'>;

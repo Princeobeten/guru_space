@@ -97,20 +97,20 @@ const PriceCalculator = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <p className="bg-yellow-100 text-navy text-sm w-max p-1 rounded-full">
+          <p className="bg-yellow-100 text-navy text-sm w-max px-2 py-1 rounded-full">
             Duration: {duration} hour(s)
           </p>
           {bookWholeSpace ? (
             <>
-              <p className="bg-red-100 text-navy text-sm w-max p-1 rounded-full">
+              <p className="bg-red-100 text-navy text-sm w-max px-2 py-1 rounded-full">
                 Whole Space Booking (20 seats)
               </p>
-              <p className="bg-blue-100 text-navy text-sm w-max p-1 rounded-full">
-                Discount Applied: NGN{WHOLE_SPACE_DISCOUNT}
+              <p className="bg-blue-100 text-navy text-sm w-max px-2 py-1 rounded-full">
+                Discount Applied: - NGN{WHOLE_SPACE_DISCOUNT}
               </p>
             </>
           ) : (
-            <p className="bg-blue-100 text-navy text-sm w-max p-1 rounded-full">
+            <p className="bg-blue-100 text-navy text-sm w-max px-2 py-1 rounded-full">
               Number of Seats: {numberOfSeats}
             </p>
           )}

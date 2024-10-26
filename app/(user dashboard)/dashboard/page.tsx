@@ -233,66 +233,91 @@ const UserDashboard = () => {
 
         {/* Booking Details */}
         <div className="space-y-3">
-          <div className="flex items-center text-gray-800">
-            <MapPin className="w-5 h-5 mr-2 text-gray-500" />
-            <span className="bg-blue-100 rounded-full p-1 text-xs">
+          <div className="flex items-center justify-between text-gray-800">
+            <div className="flex items-center gap-1">
+            <MapPin className="w-5 h-5 mr-2 text-gray-500" /> Location:
+            </div>
+            
+            <span className="bg-blue-100 rounded-full px-2 py-1 text-sm">
               {booking.location}
             </span>
           </div>
 
-          <div className="flex items-center text-gray-800">
-            <CalendarPlus2 className="w-5 h-5 mr-2 text-gray-500" />
-            <span>
+          <div className="flex items-center justify-between text-gray-800">
+            <div className="flex items-center gap-1">
+            <CalendarPlus2 className="w-5 h-5 mr-2 text-gray-500" /> Start Date:
+            </div>
+            
+            <div>
+            <span className="bg-blue-200 rounded-full px-2 py-1 text-sm mr-2">
               {booking.startDate?.seconds
                 ? new Date(
                     booking.startDate.seconds * 1000
                   ).toLocaleDateString()
                 : "Invalid Start Date"}
             </span>
-            <span className="ml-2 bg-blue-200 rounded-full p-1 text-xs">
+            <span className="bg-blue-200 rounded-full px-2 py-1 text-sm">
               Start Time: {booking.startTime}
             </span>
+            </div>
           </div>
 
-          <div className="flex items-center text-gray-800">
-            <CalendarX className="w-5 h-5 mr-2 text-gray-500" />
-            <span>
+          <div className="flex items-center justify-between text-gray-800">
+            <div className="flex items-center gap-1">
+            <CalendarX className="w-5 h-5 mr-2 text-gray-500" /> End Date:
+            </div>
+            
+            <div>
+            <span className="bg-blue-200 rounded-full px-2 py-1 text-sm mr-2">
               {booking.endDate?.seconds
                 ? new Date(booking.endDate.seconds * 1000).toLocaleDateString()
                 : "Invalid End Date"}
             </span>
-            <span className="ml-2 bg-blue-300 rounded-full p-1 text-xs">
+            <span className="bg-blue-200 rounded-full px-2 py-1 text-sm">
               End Time: {booking.endTime}
             </span>
+            </div>
           </div>
 
-          <div className="flex items-center text-gray-800">
-            <Clock className="w-5 h-5 mr-2 text-gray-500" />
-            <span className="bg-yellow-100 rounded-full p-1 text-xs">
+          <div className="flex items-center justify-between text-gray-800">
+            <div className="flex items-center gap-1">
+            <Clock className="w-5 h-5 mr-2 text-gray-500" /> Duration:
+            </div>
+            
+            <span className="bg-yellow-100 rounded-full px-2 py-1 text-sm">
               {booking.duration} hours
             </span>
           </div>
 
-          <div className="flex items-center text-gray-800">
-            <DollarSign className="w-5 h-5 mr-2 text-gray-500" />
-            <span className="bg-violet-100 rounded-full p-1 text-xs">
+          <div className="flex items-center justify-between text-gray-800">
+            <div className="flex items-center gap-1">
+            <DollarSign className="w-5 h-5 mr-2 text-gray-500" />Amout:
+            </div>
+            
+            <span className="bg-violet-100 rounded-full px-2 py-1 text-sm">
               NGN{booking.amount}
             </span>
           </div>
 
           {!booking.bookWholeSpace && (
-            <div className="flex items-center text-gray-800 pb-6">
-              <Armchair className="w-5 h-5 mr-2 text-gray-500" />
-              <span className="bg-pink-100 rounded-full p-1 text-xs">
+            <div className="flex items-center justify-between text-gray-800 pb-6">
+              <div className="flex items-center gap-1">
+                <Armchair className="w-5 h-5 mr-2 text-gray-500" /> Seat:
+              </div>
+              
+              <span className="bg-pink-100 rounded-full px-2 py-1 text-sm">
                 {booking.numberOfSeats} seats booked
               </span>
             </div>
           )}
 
           {booking.bookWholeSpace && (
-            <div className="flex items-center text-gray-800 pb-6">
-              <Armchair className="w-5 h-5 mr-2 text-gray-500" />
-              <span className="bg-pink-100 rounded-full p-1 pl-4 text-xs">
+            <div className="flex items-center justify-between text-gray-800 pb-6">
+              <div className="flex items-center gap-1">
+                <Armchair className="w-5 h-5 mr-2 text-gray-500" /> Seat:
+              </div>
+              
+              <span className="bg-pink-100 rounded-full px-2 py-1 text-sm">
                 Whole space booked (Capacity: {booking.numberOfSeats} seats)
               </span>
             </div>

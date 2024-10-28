@@ -34,3 +34,9 @@ implement a download booking button close to the booking status. This should dow
 Great is works.
 
 Now i want to implement Check in and Check out functionality for each Booking  so that once a user check's in the booking status is updated to "in progress" and the timer starts counting so ones the duration expiries then can check out. but upon check out show the initial time booked and the time the user spent before checking out if the total time spent is above 10 mints plus it would be recorded as an extart hour which the user would have to pay for. We would have tow payment method (1)Pay with cash (2)Pay now(use PayStack as the payment provider).
+
+
+
+
+
+create a countdown banner and replace the "Book New space" button user can check in once but can check in on multipe bookings, if a user checks in disable the cancel button too. Mind you the countdown is the duration the user booked if the countdown is down start a new countdown beside the other countdown for additional time spent by the user which would be used in the "Check out" botton.

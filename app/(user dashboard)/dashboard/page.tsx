@@ -34,6 +34,7 @@ import { BookingSkeleton } from "./_components/BookingSkeleton";
 import { StatusBadge } from "../_components/StatusBadge";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
+import BookingTimer from "./_components/BookingTimer";
 
 // Dynamically import the PDF download component with no SSR
 const BookingPDFDownload = dynamic(
@@ -54,23 +55,6 @@ const UserDashboard = () => {
   const [email, setEmail] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [isCancelling, setIsCancelling] = useState<string | null>(null);
-  
-  
-  // New State for Check-in and Countdown
-  const [checkInTimes, setCheckInTimes] = useState<Record<string, number>>({});
-  const [remainingTime, setRemainingTime] = useState<number | null>(null);
-  const [additionalTime, setAdditionalTime] = useState<number>(0);
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
-
-  const formatTime = (milliseconds: number) => {
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-  
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  };
-  
 
   const fetchUserData = async () => {
     if (user) {
@@ -170,121 +154,6 @@ const UserDashboard = () => {
     }
   };
 
-
-  // const handleCheckIn = useCallback(
-  //   async (bookingId: string, duration: number) => {
-  //     if (!user) return;
-
-  //     try {
-  //       const bookingRef = doc(db, "Bookings", bookingId);
-  //       const checkInTime = new Date().getTime();
-
-  //       await updateDoc(bookingRef, {
-  //         status: "in progress",
-  //         checkInTime,
-  //       });
-
-  //       // Update local state to trigger countdown
-  //       setCheckInTimes((prev) => ({ ...prev, [bookingId]: checkInTime }));
-  //       setRemainingTimes((prev) => ({
-  //         ...prev,
-  //         [bookingId]: duration * 60 * 60 * 1000,
-  //       }));
-
-  //       // Refresh current bookings
-  //       await fetchCurrentBooking();
-  //     } catch (error) {
-  //       console.error("Error during check-in:", error);
-  //     }
-  //   },
-  //   [user, fetchCurrentBooking]
-  // );  
-  
-  // TODO Implement Check in
-  // Check-in function to start countdown based on booking duration
-  const handleCheckIn = useCallback(
-    async (bookingId: string, duration: number) => {
-      if (!user) return;
-
-      try {
-        const bookingRef = doc(db, "Bookings", bookingId);
-        const checkInTime = new Date().getTime();
-
-        await updateDoc(bookingRef, {
-          status: "in progress",
-          checkInTime,
-        });
-
-        setCheckInTimes((prev) => ({ ...prev, [bookingId]: checkInTime }));
-        setRemainingTime(duration * 60 * 60 * 1000);
-        setIsCheckedIn(true);
-        setAdditionalTime(0);  // Reset additional time if user checks in again
-
-      } catch (error) {
-        console.error("Error during check-in:", error);
-      }
-    },
-    [user]
-  );
-
-  // Check-out function
-  const handleCheckOut = useCallback(async (bookingId: string) => {
-    if (!user) return;
-
-    try {
-      const bookingRef = doc(db, "Bookings", bookingId);
-
-      await updateDoc(bookingRef, {
-        status: "completed",
-        checkOutTime: new Date().getTime(),
-        totalTimeSpent: remainingTime + additionalTime, // Log total time
-      });
-
-      // Clear the countdown and additional time tracking
-      setIsCheckedIn(false);
-      setRemainingTime(null);
-      setAdditionalTime(0);
-
-      // Refresh current bookings
-      await fetchCurrentBooking();
-    } catch (error) {
-      console.error("Error during check-out:", error);
-    }
-  }, [user, remainingTime, additionalTime]);
-
-
-  // Countdown Effect
-  useEffect(() => {
-    if (isCheckedIn && remainingTime !== null) {
-      const intervalId = setInterval(() => {
-        setRemainingTime((prev) => {
-          if (prev !== null) {
-            if (prev > 0) {
-              return prev - 1000;
-            } else {
-              clearInterval(intervalId);
-              setAdditionalTime(1);
-              return null;
-            }
-          }
-          return prev;
-        });
-      }, 1000);
-      return () => clearInterval(intervalId);
-    }
-  }, [isCheckedIn, remainingTime]);
-
-  // Additional time counter
-  useEffect(() => {
-    if (remainingTime === null && isCheckedIn) {
-      const intervalId = setInterval(() => {
-        setAdditionalTime((prev) => prev + 1000);
-      }, 1000);
-      return () => clearInterval(intervalId);
-    }
-  }, [remainingTime, isCheckedIn]);
-
-
   useEffect(() => {
     if (user) {
       const fetchData = async () => {
@@ -305,10 +174,15 @@ const UserDashboard = () => {
     }
   }, [user]);
 
+
+
   const BookingCard = ({ booking }: { booking: Booking }) => {
-    const isCancelled = booking.status === "cancelled";
     const isActiveOrInProgress =
       booking.status === "active" || booking.status === "in progress";
+
+    const handleStatusUpdate = useCallback(async () => {
+      await Promise.all([fetchCurrentBooking(), fetchRecentBookings()]);
+    }, []);
 
     return (
       <motion.div
@@ -332,6 +206,7 @@ const UserDashboard = () => {
 
         {/* Booking Details */}
         <div className="space-y-3">
+
           <div className="flex items-center justify-between text-gray-800">
             <div className="flex items-center gap-1">
             <MapPin className="w-5 h-5 mr-2 text-gray-500" /> <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Location:</p>
@@ -427,41 +302,26 @@ const UserDashboard = () => {
           )}
 
           {/* Action Buttons */}
-          <div className="mt-10 flex gap-2 sm:gap-3 justify-between items-center border-t p-2">
+          <div className="mt-10 flex gap-2 sm:gap-3 justify-center items-end border-t p-2">
             {isActiveOrInProgress && (
-              <div>
-              <Button
-                className="mr-4"
-                variant="default"
-                onClick={() => handleCheckIn(booking.bookingId, booking.duration)}
-                disabled={isCheckedIn}
-              >
-                <LogIn className="w-5 h-5 mr-1 sm:mr-2" />
-                <p className="hidden sm:inline-flex md:hidden lg:inline-flex -ml-2 -mr-1">Check</p>In
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => handleCheckOut(booking.bookingId)}
-                disabled={!isCheckedIn}
-              >
-                <LogOut className="w-5 h-5 mr-1 sm:mr-2" />
-                <p className="hidden sm:inline-flex md:hidden lg:inline-flex -ml-2 -mr-1">Check</p>Out
-              </Button>
-            </div>
-            )}
-            {isActiveOrInProgress && (
-              <Button
+              <div className="flex items-end justify-between gap-4">
+            <BookingTimer 
+              booking={booking} 
+              onStatusUpdate={handleStatusUpdate}
+            />
+            <Button
               variant="destructive"
-              
-                onClick={() => handleCancelBooking(booking.bookingId)}
-                disabled={isCancelling === booking.bookingId}
-              >
-                {isCancelling === booking.bookingId ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <XCircle className="w-5 h-5" />
-                )}
-              </Button>
+              onClick={() => handleCancelBooking(booking.bookingId)}
+              disabled={isCancelling === booking.bookingId}
+              className="w-max h-max"
+            >
+              {isCancelling === booking.bookingId ? (
+                <Loader2 className="w-5 h-4 animate-spin" />
+              ) : (
+                <XCircle className="w-5 h-4" />
+              )}
+            </Button>
+          </div>
             )}
           </div>
         </div>
@@ -500,18 +360,7 @@ const UserDashboard = () => {
           </p>
         </motion.div>
 
-        {/* Countdown Banner */}
-        {isCheckedIn && (
-           <div className="mb-4 p-4 rounded-md bg-blue-50 text-center">
-           {remainingTime !== null ? (
-             <p>Time Remaining: {formatTime(remainingTime)}</p>
-           ) : (
-             <p>Overtime: {formatTime(additionalTime)}</p>
-           )}
-         </div>
-        )}
-
-        {/* Book New Space Button */}
+        {/* Quick Actions */}
         <div className="mb-8">
           <Link
             href="/booking"

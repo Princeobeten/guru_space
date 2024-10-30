@@ -34,3 +34,11 @@ implement a download booking button close to the booking status. This should dow
 Great is works.
 
 Now i want to implement Check in and Check out functionality for each Booking  so that once a user check's in the booking status is updated to "in progress" and the timer starts counting so ones the duration expiries then can check out. but upon check out show the initial time booked and the time the user spent before checking out if the total time spent is above 10 mints plus it would be recorded as an extart hour which the user would have to pay for. We would have tow payment method (1)Pay with cash (2)Pay now(use PayStack as the payment provider).
+
+
+
+Implement the check out button:
+Bring a popup component that carries the booking summary and the amount to pay(which would be the inital booked amount + the extra hour * 400)
+2 types of payment pay with "cash" and and "pay now"
+
+for the pay with cash generate and send a token to the firestore db and reqest it from the user as a means of validating the user has paid in cash, if same display a payment succesful icon and message, update the booking status as compelted and delete the token from the firestore db so it cant be useded again.

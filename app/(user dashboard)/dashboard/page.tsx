@@ -30,7 +30,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { BookingSkeleton } from "./_components/BookingSkeleton";
-// import { BookingPDFDownload } from "../_components/BookingDownloadButton";
 import { StatusBadge } from "../_components/StatusBadge";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
@@ -59,11 +58,9 @@ const UserDashboard = () => {
   const fetchUserData = async () => {
     if (user) {
       try {
-        // First try to find the user document by auth uid
         let userDoc = await getDoc(doc(db, "Users", user.uid));
 
         if (!userDoc.exists()) {
-          // If not found, try to find the user document by querying the uid field
           const usersRef = collection(db, "Users");
           const q = query(usersRef, where("uid", "==", user.uid));
           const querySnapshot = await getDocs(q);
@@ -121,9 +118,6 @@ const UserDashboard = () => {
       limit(2)
     );
 
-    // const snapshot = await getDocs(q);
-    // const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
-    // setRecentBookings(bookings);
     try {
       const snapshot = await getDocs(q);
       const bookings = snapshot.docs.map((doc) => mapBookingData(doc));
@@ -145,7 +139,6 @@ const UserDashboard = () => {
         cancelledAt: new Date(),
       });
 
-      // Refresh the bookings data
       await Promise.all([fetchCurrentBooking(), fetchRecentBookings()]);
     } catch (error) {
       console.error("Error cancelling booking:", error);
@@ -179,10 +172,15 @@ const UserDashboard = () => {
   const BookingCard = ({ booking }: { booking: Booking }) => {
     const isActiveOrInProgress =
       booking.status === "active" || booking.status === "in progress";
+      const [isCheckedIn, setIsCheckedIn] = useState(false);
 
     const handleStatusUpdate = useCallback(async () => {
       await Promise.all([fetchCurrentBooking(), fetchRecentBookings()]);
     }, []);
+
+  const handleCheckInStatusChange = (checkedIn: boolean) => {
+    setIsCheckedIn(checkedIn);
+  };
 
     return (
       <motion.div
@@ -259,7 +257,7 @@ const UserDashboard = () => {
             <p className="hidden sm:inline-flex md:hidden lg:inline-flex">Amout:</p>
             </div>
             
-            <span className="bg-yellow-100 rounded-full px-2 py-1 text-sm">
+            <span className="bg-orange-100 rounded-full px-2 py-1 text-sm">
               {booking.duration} hours
             </span>
           </div>
@@ -306,13 +304,18 @@ const UserDashboard = () => {
             {isActiveOrInProgress && (
               <div className="flex items-end justify-between gap-4">
             <BookingTimer 
-              booking={booking} 
+              booking={{
+                bookingId: booking.bookingId,
+                duration: booking.duration,
+                amount: booking.amount,
+              }} 
               onStatusUpdate={handleStatusUpdate}
+              onCheckInStatusChange={handleCheckInStatusChange} 
             />
             <Button
               variant="destructive"
               onClick={() => handleCancelBooking(booking.bookingId)}
-              disabled={isCancelling === booking.bookingId}
+              disabled={isCancelling === booking.bookingId || isCheckedIn} 
               className="w-max h-max"
             >
               {isCancelling === booking.bookingId ? (
@@ -380,7 +383,11 @@ const UserDashboard = () => {
           >
             <h2 className="text-xl font-semibold mb-4">Current Bookings</h2>
             {isLoading ? (
+              <div className="space-y-4">
+                <BookingSkeleton />
               <BookingSkeleton />
+              <BookingSkeleton />
+              </div>
             ) : currentBookings.length > 0 ? (
               <div className="space-y-4">
                 {currentBookings.map((booking, index) => (

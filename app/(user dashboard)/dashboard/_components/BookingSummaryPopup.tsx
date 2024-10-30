@@ -107,7 +107,7 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
 
         {!paymentStatus && (
           <div className="mt-4 flex space-x-2">
-            <Button className="w-full" onClick={handlePayWithCash}>Pay with Cash</Button>
+            {/* <Button className="w-full" onClick={handlePayWithCash}>Pay with Cash</Button> */}
             <Button variant="outline" className="w-full" onClick={completeBooking}>Pay Now</Button>
           </div>
         )}

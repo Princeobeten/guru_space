@@ -33,8 +33,9 @@ import { toast } from "@/hooks/use-toast";
 import { BookingPageSkeleton } from "./_components/bookingPageSkeleton";
 import { Loader2 } from "lucide-react";
 import Toaster from "@/components/Toaster";
+import { PRICE_PER_SEAT } from '@/lib/constants';
 
-export const PRICE_PER_SEAT = 300;
+
 const WHOLE_SPACE_DISCOUNT = 1000;
 const TOTAL_SEATS = 20;
 const BUSINESS_HOURS = {

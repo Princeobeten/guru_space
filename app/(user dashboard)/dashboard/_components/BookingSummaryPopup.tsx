@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { XCircle, CheckCircle } from 'lucide-react';
-import { PRICE_PER_SEAT } from '../../booking/page';
+import { PRICE_PER_SEAT } from '@/lib/constants';
 
 interface BookingSummaryPopupProps {
   extraTime: number;

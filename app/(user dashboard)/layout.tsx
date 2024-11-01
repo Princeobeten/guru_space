@@ -15,7 +15,9 @@ export default function UserLayout({
 }) {
   return (
     <html lang="en">
-      <body><TopNav/>{children} <BottomNav/></body>
+      <TopNav/>
+      <body>{children}</body>
+      <BottomNav/>
     </html>
   );
 }

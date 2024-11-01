@@ -15,7 +15,6 @@ export default function UserLayout({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TopNav />
       <AnimatePresence mode="wait">
         <motion.main
           key={pathname}
@@ -31,7 +30,6 @@ export default function UserLayout({
           {children}
         </motion.main>
       </AnimatePresence>
-      <BottomNav />
     </div>
   );
 }

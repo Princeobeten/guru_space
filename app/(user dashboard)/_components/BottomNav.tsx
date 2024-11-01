@@ -54,7 +54,7 @@ const BottomNav = () => {
                 isActive ? 'text-blue-600' : 'text-white'
               )}
             >
-              <Icon className="w-6 h-6" />
+              <Icon className="w-4 h-4" />
               <span className="text-xs">{label}</span>
               {isActive && (
                 <motion.div

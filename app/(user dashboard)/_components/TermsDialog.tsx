@@ -12,7 +12,7 @@ const TermsDialog = ({
   isOpen,
   onOpenChange,
   triggerClassName = "text-navy hover:underline",
-  triggerText = "View Terms"
+  triggerText = ""
 }: TermsDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>

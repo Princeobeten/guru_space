@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateDoc, doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
+import { updateDoc, doc, setDoc, deleteDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -24,19 +24,32 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [enteredToken, setEnteredToken] = useState("");
+  const [isGeneratingToken, setIsGeneratingToken] = useState(false);
 
   const extraCost = Math.ceil(extraTime / (1000 * 60 * 60)) * PRICE_PER_SEAT;
   const totalAmount = initialAmount + extraCost;
 
   // Generate and store token in Firestore for cash payment
   const handlePayWithCash = async () => {
+    setIsGeneratingToken(true);
     const generatedToken = Math.random().toString(36).substr(2, 8);
     try {
-      await setDoc(doc(db, "CashTokens", bookingId), { token: generatedToken });
+      // Store token with additional booking information
+      await setDoc(doc(db, "CashTokens", bookingId), {
+        token: generatedToken,
+        bookingId,
+        totalAmount,
+        createdAt: serverTimestamp(),
+        status: 'pending'
+      });
+      
       setToken(generatedToken);
       setPaymentStatus("token-generated");
     } catch (error) {
       console.error("Error generating token:", error);
+      setPaymentStatus("error");
+    } finally {
+      setIsGeneratingToken(false);
     }
   };
 
@@ -107,7 +120,7 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
 
         {!paymentStatus && (
           <div className="mt-4 flex space-x-2">
-            {/* <Button className="w-full" onClick={handlePayWithCash}>Pay with Cash</Button> */}
+            <Button className="w-full" onClick={handlePayWithCash}>Pay with Cash</Button>
             <Button variant="outline" className="w-full" onClick={completeBooking}>Pay Now</Button>
           </div>
         )}

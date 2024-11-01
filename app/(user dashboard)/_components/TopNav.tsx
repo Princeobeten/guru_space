@@ -3,18 +3,17 @@
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
-import { Bell, LogOut, HelpCircle } from "lucide-react";
+import { LogOut, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Cookies from 'js-cookie';
-import TermsDialog from './TermsDialog'; // Import the TermsDialog component
+import TermsDialog from './TermsDialog';
 
 const TopNav = () => {
   const router = useRouter();
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false); // State for TermsDialog
+  const [isTermsDialogOpen, setIsTermsDialogOpen] = useState(false); 
 
   const handleLogout = async () => {
     if (isLoggingOut) return; 
@@ -45,17 +44,9 @@ const TopNav = () => {
     }
   };
 
-  // Sample notifications - replace with real data
-  const notifications = [
-    { id: 1, message: "New booking request", time: "5m ago" },
-    { id: 2, message: "Payment received", time: "1h ago" },
-    { id: 3, message: "New review posted", time: "2h ago" },
-  ];
-
   return (
-    <nav className="fixed top-0 w-full h-max z-50 bg-navy text-white shadow-lg">
-      {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto h-max px-4 mt-2 flex justify-between items-center">
+    <nav className="fixed top-0 h-14 w-full z-50 bg-navy text-white shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 mt-2 flex justify-between items-center">
         {/* Logo */}
         <Link
           href="/dashboard"
@@ -72,45 +63,15 @@ const TopNav = () => {
         </Link>
 
         {/* Icons Section */}
-        <div className="flex items-center justify-center space-x-6">
+        <div className="flex items-center justify-center space-x-2">
           <motion.div className="relative" whileHover={{ scale: 1.05 }}>
             {/* Help Icon */}
             <button
               onClick={() => setIsTermsDialogOpen(true)} // Open the TermsDialog on click
               className="p-2 hover:bg-navy-light rounded-full transition-colors duration-200 relative"
             >
-              <HelpCircle className="h-6 w-6" />
+              <HelpCircle className="h-5 w-5" />
             </button>
-
-            <AnimatePresence>
-              {isNotificationOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg overflow-hidden"
-                >
-                  <div className="p-4 bg-navy-light border-b border-gray-700">
-                    <h3 className="text-lg font-semibold">Notifications</h3>
-                  </div>
-                  <div className="max-h-96 overflow-y-auto">
-                    {notifications.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className="p-4 border-b border-gray-700 hover:bg-navy-light cursor-pointer transition-colors duration-200"
-                      >
-                        <p className="text-white text-sm">
-                          {notification.message}
-                        </p>
-                        <span className="text-gray-400 text-xs">
-                          {notification.time}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </motion.div>
 
           {/* Logout Button */}
@@ -123,8 +84,8 @@ const TopNav = () => {
             onClick={handleLogout}
             disabled={isLoggingOut}
           >
-            <LogOut className="h-6 w-6" />
-            <span className="hidden md:block">
+            <LogOut className="h-4 w-4" />
+            <span className="hidden md:block text-xs">
               {isLoggingOut ? 'Logging out...' : 'Logout'}
             </span>
           </motion.button>

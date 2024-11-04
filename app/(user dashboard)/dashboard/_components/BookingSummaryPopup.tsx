@@ -1,3 +1,5 @@
+"use cleint";
+
 import React, { useState } from 'react';
 import { updateDoc, doc, setDoc, deleteDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -5,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { XCircle, CheckCircle } from 'lucide-react';
 import { PRICE_PER_SEAT } from '@/lib/constants';
+import { PaystackButton } from 'react-paystack';
 
 interface BookingSummaryPopupProps {
   extraTime: number;
@@ -12,6 +15,7 @@ interface BookingSummaryPopupProps {
   bookingId: string;
   initialAmount: number;
   duration: number;
+  customerEmail: string;
 }
 
 const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
@@ -19,7 +23,8 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
   onClose,
   bookingId,
   initialAmount,
-  duration
+  duration,
+  customerEmail,
 }) => {
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
@@ -28,13 +33,29 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
 
   const extraCost = Math.ceil(extraTime / (1000 * 60 * 60)) * PRICE_PER_SEAT;
   const totalAmount = initialAmount + extraCost;
+  // const PAYSTACK_PUBLIC_KEY = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY;
 
-  // Generate and store token in Firestore for cash payment
+  // Paystack Configurations
+  const paystackConfig = {
+    reference: bookingId,
+    email: customerEmail,
+    amount: totalAmount * 100, // Paystack expects the amount in kobo
+    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "pk_live_44df19026d6caa0118ef56ccaeda5196569b93da",
+  };
+
+  const handlePaystackSuccess = async () => {
+    await completeBooking();
+    setPaymentStatus("success");
+  };
+
+  const handlePaystackClose = () => {
+    alert("Payment process was canceled.");
+  };
+
   const handlePayWithCash = async () => {
     setIsGeneratingToken(true);
     const generatedToken = Math.random().toString(36).substr(2, 8);
     try {
-      // Store token with additional booking information
       await setDoc(doc(db, "CashTokens", bookingId), {
         token: generatedToken,
         bookingId,
@@ -53,7 +74,6 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
     }
   };
 
-  // Validate cash payment token
   const handleValidateToken = async () => {
     try {
       const tokenRef = doc(db, "CashTokens", bookingId);
@@ -119,9 +139,15 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
         )}
 
         {!paymentStatus && (
-           <div className="mt-4 flex space-x-2">
+          <div className="mt-4 flex space-x-2">
             <Button className="w-full" onClick={handlePayWithCash}>Pay with Cash</Button>
-            {/* <Button variant="outline" className="w-full" onClick={completeBooking}>Pay Now</Button> */}
+            <PaystackButton
+              {...paystackConfig}
+              text="Pay Now"
+              onSuccess={handlePaystackSuccess}
+              onClose={handlePaystackClose}
+              className="w-full border rounded-lg"
+            />
           </div>
         )}
       </div>

@@ -308,6 +308,7 @@ const UserDashboard = () => {
                 bookingId: booking.bookingId,
                 duration: booking.duration,
                 amount: booking.amount,
+                customerEmail:email
               }} 
               onStatusUpdate={handleStatusUpdate}
               onCheckInStatusChange={handleCheckInStatusChange} 

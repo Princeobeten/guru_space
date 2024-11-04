@@ -10,6 +10,7 @@ interface Booking {
   bookingId: string;
   duration: number;
   amount: number
+  customerEmail: string;
 }
 
 interface BookingTimerProps {
@@ -173,6 +174,7 @@ const BookingTimer: React.FC<BookingTimerProps> = ({ booking, onStatusUpdate, on
           bookingId={booking.bookingId}
           initialAmount={booking.amount}
           duration={booking.duration}
+          customerEmail={booking.customerEmail}
         />
       )}
       </div>

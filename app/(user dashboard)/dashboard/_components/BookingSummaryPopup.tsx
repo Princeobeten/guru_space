@@ -40,7 +40,8 @@ const BookingSummaryPopup: React.FC<BookingSummaryPopupProps> = ({
     reference: bookingId,
     email: customerEmail,
     amount: totalAmount * 100, // Paystack expects the amount in kobo
-    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "pk_live_44df19026d6caa0118ef56ccaeda5196569b93da",
+    publicKey: "pk_live_44df19026d6caa0118ef56ccaeda5196569b93da",
+    // publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
   };
 
   const handlePaystackSuccess = async () => {

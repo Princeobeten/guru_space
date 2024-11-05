@@ -21,7 +21,7 @@ interface BookingTimerProps {
   onCheckInStatusChange: (checkedIn: boolean) => void;
 }
 
-const BookingTimer: React.FC<BookingTimerProps> = ({ booking, onStatusUpdate, onCheckInStatusChange }) => {
+export const BookingTimer: React.FC<BookingTimerProps> = ({ booking, onStatusUpdate, onCheckInStatusChange }) => {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [extraTime, setExtraTime] = useState(0);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -149,4 +149,4 @@ const BookingTimer: React.FC<BookingTimerProps> = ({ booking, onStatusUpdate, on
   );
 };
 
-export default BookingTimer;
+// export default BookingTimer;

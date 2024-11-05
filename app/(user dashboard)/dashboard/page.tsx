@@ -33,7 +33,16 @@ import { BookingSkeleton } from "./_components/BookingSkeleton";
 import { StatusBadge } from "../_components/StatusBadge";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
-import BookingTimer from "./_components/BookingTimer";
+// import BookingTimer from "./_components/BookingTimer";
+
+// Dynamically import the PDF download component with no SSR
+const BookingTimer = dynamic(
+  () =>
+    import("./_components/BookingTimer").then(
+      (mod) => mod.BookingTimer
+    ),
+  { ssr: false }
+);
 
 // Dynamically import the PDF download component with no SSR
 const BookingPDFDownload = dynamic(
